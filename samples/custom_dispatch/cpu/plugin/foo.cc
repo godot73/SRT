@@ -3,5 +3,5 @@
 #include <iostream>
 
 void foo() {
-  std::cout << "xxxxxxxxxx\n";
+  std::cout << "std::cout xxxxxxxxxx\n";
 }

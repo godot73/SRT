@@ -13,9 +13,14 @@ endif()
 # system-library plugin mechanism using the system dynamic library loader.
 if(IREE_HAL_EXECUTABLE_PLUGIN_SYSTEM_LIBRARY)
 
+add_library(foo SHARED foo.cc)
+
 add_library(iree_samples_custom_dispatch_cpu_system_plugin SHARED
   system_plugin.c
 )
+
+target_link_libraries(iree_samples_custom_dispatch_cpu_system_plugin PRIVATE foo)
+
 target_include_directories(iree_samples_custom_dispatch_cpu_system_plugin
   PRIVATE
     ${IREE_SOURCE_DIR}/runtime/src/

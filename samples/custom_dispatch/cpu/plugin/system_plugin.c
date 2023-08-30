@@ -30,6 +30,9 @@
 // The only header required from IREE:
 #include "iree/hal/local/executable_plugin.h"
 
+// TODO: Undo this.
+#include "foo.h"
+
 // Stateful plugin instance.
 // There may be multiple of these in a process at a time, each with its own
 // load/unload pairing. We pass a pointer to this to all import calls via the
@@ -63,6 +66,9 @@ typedef struct {
 // Try not to fail!
 static int simple_mul_workgroup(void* params_ptr, void* context,
                                 void* reserved) {
+  // TODO: Undo this.
+  foo();
+
   system_plugin_t* plugin = (system_plugin_t*)context;
   typedef struct {
     const float* restrict binding0;
