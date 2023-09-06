@@ -60,6 +60,11 @@ static llvm::cl::opt<bool> clEnablePadConsumerFusion(
     llvm::cl::desc("Flag to enable the fusion for pad + consumer"),
     llvm::cl::init(false));
 
+static llvm::cl::opt<bool> clEnableAccelMicrokernels(
+    "iree-llvmcpu-enable-accel-ukernels",
+    llvm::cl::desc("Flag to enable lowering to accelUkernels"),
+    llvm::cl::init(false));
+
 static llvm::cl::opt<bool> clEnableReassociateFpReductions(
     "iree-llvmcpu-reassociate-fp-reductions",
     llvm::cl::desc("Enables reassociation for FP reductions"),
@@ -538,6 +543,71 @@ void addMmt4dTilingExpertPassPipeline(OpPassManager &passManager,
   options.lowerVectorTransposeToAVX2 = lowerToAVX2;
   options.splitVectorTransfersTo = "linalg-copy";
   buildLLVMCPUVectorLoweringPipeline(nestedModulePM, options);
+}
+
+void addAccelMatmulExpertPassPipeline(OpPassManager &passManager,
+                                      TilingConfig &tilingConfig,
+                                      bool enableAccelMicrokernels) {
+  addTileAndDistributePasses(passManager);
+
+  OpPassManager &nestedModulePM = passManager.nest<ModuleOp>();
+
+  if (enableAccelMicrokernels) {
+//     nestedModulePM.addNestedPass<func::FuncOp>(
+//         createDecomposeBatchMmt4DOpsPass());
+//     nestedModulePM.addPass(
+//         createCPULowerToUKernelsPass(clSkipIntermediateRoundings));
+    nestedModulePM.addPass(createLLVMCPULowerToAccelUKernelsPass());
+  }
+  // We still run codegen pipeline because we want a better fallback when
+  // ukernels are not available. They are nop if the mmt4d op is convereted to
+  // ukernels. If ukernels are not implemented, the lowering config is still
+  // carried by compute ops, so we can use it as a fallback solution.
+  nestedModulePM.addNestedPass<func::FuncOp>(createLLVMCPUTileAndFusePass(
+      static_cast<int64_t>(tilingConfig.getVectorCommonParallelLevel())));
+  nestedModulePM.addNestedPass<func::FuncOp>(createLLVMCPUTilePass(
+      static_cast<int64_t>(tilingConfig.getVectorReductionLevel())));
+  nestedModulePM.addNestedPass<func::FuncOp>(createGenericVectorizationPass());
+  nestedModulePM.addNestedPass<func::FuncOp>(
+      createOptimizeTensorInsertExtractSlicesPass());
+
+  nestedModulePM.addNestedPass<func::FuncOp>(createCanonicalizerPass());
+  nestedModulePM.addNestedPass<func::FuncOp>(createCSEPass());
+
+  addCPUBufferizePasses(nestedModulePM);
+
+  // Vector lowering of Mmt4d.
+  nestedModulePM.addNestedPass<func::FuncOp>(
+      createLLVMCPUMmt4dVectorLoweringPass());
+
+  // Generic vector lowering.
+  LLVMCPUVectorLoweringPassOptions options;
+  options.lowerVectorTransposeToAVX2 = /*lowerToAVX2=*/false;
+  options.splitVectorTransfersTo = "linalg-copy";
+  buildLLVMCPUVectorLoweringPipeline(nestedModulePM, options);
+#if 0
+  addTileAndDistributePasses(passManager);
+
+  OpPassManager &nestedModulePM = passManager.nest<ModuleOp>();
+
+  if (enableAccelMicrokernels) {
+    nestedModulePM.addPass(createLLVMCPULowerToAccelUKernelsPass());
+  } else {
+    nestedModulePM.addNestedPass<func::FuncOp>(createLLVMCPUTileAndFusePass(
+        static_cast<int64_t>(tilingConfig.getVectorCommonParallelLevel())));
+    nestedModulePM.addNestedPass<func::FuncOp>(createLLVMCPUTilePass(
+        static_cast<int64_t>(tilingConfig.getVectorReductionLevel())));
+    nestedModulePM.addNestedPass<func::FuncOp>(
+        createGenericVectorizationPass());
+    nestedModulePM.addNestedPass<func::FuncOp>(
+        createHoistRedundantVectorTransfersPass());
+  }
+
+  nestedModulePM.addNestedPass<func::FuncOp>(createCanonicalizerPass());
+  nestedModulePM.addNestedPass<func::FuncOp>(createCSEPass());
+
+  addBufferizePasses(nestedModulePM);
+#endif
 }
 
 void addCPUDataTilingPipeline(OpPassManager &passManager,

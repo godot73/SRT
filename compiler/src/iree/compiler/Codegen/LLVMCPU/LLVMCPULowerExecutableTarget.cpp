@@ -136,6 +136,8 @@ void LLVMCPULowerExecutableTargetPass::runOnOperation() {
   bool enableMicrokernels = hasUkernel(target);
   bool enableAArch64SSVE =
       isAArch64(target) && hasAnySVEFeature(target) && hasSMEFeature(target);
+  fprintf(stderr, "xxxxxxxxxxxx executable target pass: runOnOperation %d!\n",
+          translationInfo.value().getDispatchLoweringPassPipeline());
   switch (translationInfo.value().getDispatchLoweringPassPipeline()) {
   // No pipleline specified, nothing to do.
   case IREE::Codegen::DispatchLoweringPassPipeline::None:
@@ -189,6 +191,13 @@ void LLVMCPULowerExecutableTargetPass::runOnOperation() {
   case IREE::Codegen::DispatchLoweringPassPipeline::TransformDialectCodegen:
     addTransformDialectPasses(pipeline);
     break;
+  case IREE::Codegen::DispatchLoweringPassPipeline::AccelMatmulExpert: {
+    TilingConfig tilingConfig = getTilingConfigForPipeline(moduleOp);
+    fprintf(stderr, "xxxxxxxxxxxx enable!\n");
+    addAccelMatmulExpertPassPipeline(pipeline, tilingConfig,
+                                     /*enableAccelMicrokernels=*/true);
+    break;
+  }
   default:
     moduleOp.emitOpError("Unsupported pipeline on CPU target.");
     return signalPassFailure();

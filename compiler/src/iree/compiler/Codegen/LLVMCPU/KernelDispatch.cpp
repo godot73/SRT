@@ -1345,6 +1345,18 @@ static LogicalResult setRootConfig(mlir::FunctionOpInterface entryPointFn,
       DispatchLoweringPassPipeline::Mmt4dTilingExpert);
 }
 
+/// Sets the lowering configuration for dispatch region for linalg.matmul root
+/// op
+static LogicalResult setRootConfig(func::FuncOp entryPointFn,
+                                   linalg::MatmulOp matmulOp) {
+  assert(!getLoweringConfig(matmulOp) && "expected lowering_config is not set");
+  SmallVector<int64_t> tileSizes;
+  tileSizes.push_back(1);
+  return setOpConfigAndEntryPointFnTranslation(
+      entryPointFn, matmulOp, tileSizes,
+      DispatchLoweringPassPipeline::AccelMatmulExpert);
+}
+
 /// Sets the lowering configuration for dispatch region for linalg.batch_mmt4d
 /// root op
 static LogicalResult setRootConfig(mlir::FunctionOpInterface entryPointFn,
@@ -2026,7 +2038,7 @@ setRootConfigImpl(mlir::FunctionOpInterface entryPointFn, Operation *op,
                                targetMLTransInfo);
         })
         .Case<IREE::LinalgExt::FftOp, tensor::PackOp, tensor::PadOp,
-              tensor::UnPackOp, linalg::Mmt4DOp, linalg::BatchMmt4DOp>(
+              tensor::UnPackOp, linalg::Mmt4DOp, linalg::MatmulOp, linalg::BatchMmt4DOp>(
             [&](auto op) { return setRootConfig(entryPointFn, op); })
         .Case<linalg::Conv2DNhwcHwcfOp, linalg::Conv2DNchwFchwOp,
               linalg::PoolingNhwcSumOp, linalg::PoolingNhwcMaxOp,
