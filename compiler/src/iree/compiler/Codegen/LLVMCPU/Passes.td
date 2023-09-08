@@ -73,6 +73,14 @@ def LLVMCPULowerExecutableTarget :
       "mlir::iree_compiler::createLLVMCPULowerExecutableTargetPass()";
 }
 
+def LLVMCPULowerToAccelUKernels :
+    Pass<"iree-llvmcpu-lower-to-accel-ukernels", ""> {
+  let summary =
+      "Separate out parts of the IR that lower to a micro-kernel";
+  let constructor =
+      "mlir::iree_compiler::createLLVMCPULowerToAccelUKernelsPass()";
+}
+
 def LLVMCPULowerToUKernels :
     Pass<"iree-llvmcpu-lower-to-ukernels", ""> {
   let summary =

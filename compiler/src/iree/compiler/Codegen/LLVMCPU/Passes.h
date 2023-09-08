@@ -45,6 +45,10 @@ std::unique_ptr<Pass> createExpandF16OpToF32Pass();
 
 /// Pass to lower a sequence of operations to a iree_codegen.ukernel.*
 /// operation.
+std::unique_ptr<OperationPass<>> createLLVMCPULowerToAccelUKernelsPass();
+
+/// Pass to lower a sequence of operations to a iree_codegen.ukernel.*
+/// operation.
 std::unique_ptr<OperationPass<>>
 createLLVMCPULowerToUKernelsPass(bool skipIntermediateRoundings = true);
 
