@@ -717,7 +717,7 @@ static void addLowerToLLVMGPUPasses(OpPassManager &pm, bool forROCDL) {
 
   pm.addNestedPass<func::FuncOp>(memref::createExpandOpsPass());
   pm.addPass(memref::createFoldMemRefAliasOpsPass());
-  pm.addPass(memref::createExpandStridedMetadataPass());
+  pm.addPass(createIREEExpandStridedMetadataPass());
   pm.addPass(createEmulateNarrowTypePass());
   pm.addPass(createLowerAffinePass());
   pm.addPass(createCanonicalizerPass());
