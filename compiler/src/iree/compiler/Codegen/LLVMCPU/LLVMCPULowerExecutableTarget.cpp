@@ -194,8 +194,7 @@ void LLVMCPULowerExecutableTargetPass::runOnOperation() {
   case IREE::Codegen::DispatchLoweringPassPipeline::AccelMatmulExpert: {
     TilingConfig tilingConfig = getTilingConfigForPipeline(moduleOp);
     fprintf(stderr, "xxxxxxxxxxxx enable!\n");
-    addAccelMatmulExpertPassPipeline(pipeline, tilingConfig,
-                                     /*enableAccelMicrokernels=*/true);
+    addAccelMatmulExpertPassPipeline(pipeline, tilingConfig);
     break;
   }
   default:

@@ -98,7 +98,7 @@ void buildGlobalOptimizationPassPipeline(
       // RaiseSpecialOps, by virtue of implementing various peephole
       // optimizations, is sensitive to surrounding IR structure. Thus we run
       // this pass both before unit dim folding + consteval, as well as after.
-      .addPass(createRaiseSpecialOps)
+//       .addPass(createRaiseSpecialOps)
       // We decompose and transpose concatenations immediately before folding
       // unit extent dims because this allows decoupling unit dims in the
       // concatenation from the transposes that are introduced.
