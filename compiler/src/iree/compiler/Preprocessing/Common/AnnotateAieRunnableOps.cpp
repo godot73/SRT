@@ -9,9 +9,13 @@ namespace {
 // TODO(sungsoon)
 struct AnnotateAieRunnableOpsPass
     : AnnotateAieRunnableOpsBase<AnnotateAieRunnableOpsPass> {
+
+  AnnotateAieRunnableOpsPass() {
+    fprintf(stderr, "yyyyyyyy AnnotateAieRunnableOpsPass ctor\n");
+  }
+
   void runOnOperation() override {
-    printf("xxxxxxxx AnnotateAieRunnableOpsPass\n");
-    fprintf(stderr, "yyyyyyyy AnnotateAieRunnableOpsPass\n");
+    fprintf(stderr, "yyyyyyyy AnnotateAieRunnableOpsPass::runOnOperation()\n");
   }
 };
 
