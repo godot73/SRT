@@ -37,6 +37,9 @@ std::unique_ptr<Pass> createConvertConvToChannelsLastPass();
 // A pass to pad linalg ops to the next integer multiple of `paddingSize`.
 std::unique_ptr<Pass> createPadLinalgOpsToIntegerMultiplePass();
 
+// TODO(sungsoon)
+std::unique_ptr<Pass> createAnnotateAieRunnableOpsPass();
+
 //===----------------------------------------------------------------------===//
 // Register all Passes
 //===----------------------------------------------------------------------===//

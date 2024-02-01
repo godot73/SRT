@@ -26,6 +26,7 @@ iree_cc_library(
     "Passes.h"
     "Passes.h.inc"
   SRCS
+    "AnnotateAieRunnableOps.cpp"
     "ConvertConv2DToImg2Col.cpp"
     "ConvertConvNchwToNhwc.cpp"
     "ConvertConvToChannelsLast.cpp"

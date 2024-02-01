@@ -59,7 +59,7 @@ def PadLinalgOps :
 
 def AnnotateAieRunnableOps :
     Pass<"iree-preprocessing-annotate-aie-runnable-ops", ""> {
-  let summary = "TODO";
+  let summary = "TODO(sungsoon)";
   let constructor = "mlir::iree_compiler::Preprocessing::createAnnotateAieRunnableOpsPass()";
 }
 
