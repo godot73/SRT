@@ -58,6 +58,9 @@ void buildPreprocessingPassPipeline(
     OpPassManager &passManager,
     const PreprocessingOptions &preprocessingOptions,
     PipelineExtensions *pipelineExtensions) {
+  // TODO(sungsoon)
+  passManager.addPass(Preprocessing::createAnnotateAieRunnableOpsPass());
+
   auto pipelineStr = preprocessingOptions.preprocessingPassPipeline;
   if (!preprocessingOptions.preprocessingPassPipeline.empty()) {
     extendWithTextPipeline(passManager,
