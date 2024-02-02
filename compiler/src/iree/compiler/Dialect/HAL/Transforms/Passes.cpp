@@ -9,6 +9,7 @@
 #include <memory>
 
 #include "iree/compiler/Codegen/Common/CPU/Passes.h"
+#include "iree/compiler/Codegen/LLVMCPU/Passes.h"
 #include "iree/compiler/Dialect/HAL/IR/HALDialect.h"
 #include "iree/compiler/Dialect/HAL/IR/HALOps.h"
 #include "iree/compiler/Dialect/Util/Transforms/Passes.h"
@@ -251,6 +252,9 @@ void buildHALTransformPassPipeline(OpPassManager &passManager,
   //----------------------------------------------------------------------------
   // Device assignment and interface materialization
   //----------------------------------------------------------------------------
+
+  // TODO(sungsoon)
+  passManager.addPass(createLLVMCPULowerToAccelUKernelsPass());
 
   if (compileFrom < PipelinePhase::ExecutableSources) {
     buildHALConfigurationPassPipeline(passManager, targetRegistry,
