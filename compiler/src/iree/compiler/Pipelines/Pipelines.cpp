@@ -31,7 +31,6 @@ void buildIREEPrecompileTransformPassPipeline(
     IREE::HAL::TargetOptions executableOptions, IREEVMPipelineHooks &hooks,
     OpPassManager &passManager, IREEVMPipelinePhase compileFrom,
     IREEVMPipelinePhase compileTo) {
-
   // If the user specified a set of target devices we attach them to the module
   // IR so that they are available for all passes that may want to use this
   // information. If trying to compile in a generic mode the user should omit
