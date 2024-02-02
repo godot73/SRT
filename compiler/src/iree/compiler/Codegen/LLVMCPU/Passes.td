@@ -207,4 +207,12 @@ def VerifyLinalgTransformLegality :
   let constructor = "mlir::iree_compiler::createVerifyLinalgTransformLegalityPass()";
 }
 
+def LLVMCPULowerToAccelUKernels :
+    Pass<"iree-llvmcpu-lower-to-accel-ukernels", ""> {
+  let summary =
+      "Separate out parts of the IR that lower to an accel-micro-kernel";
+  let constructor =
+      "mlir::iree_compiler::createLLVMCPULowerToAccelUKernelsPass()";
+}
+
 #endif // IREE_CODEGEN_LLVMCPU_PASSES

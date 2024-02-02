@@ -220,6 +220,10 @@ createLLVMCPULinkExecutablesPass();
 /// Populates passes needed to link HAL executables across LLVMCPU targets.
 void buildLLVMCPULinkingPassPipeline(OpPassManager &passManager);
 
+/// Pass to lower a sequence of operations to a iree_codegen.ukernel.*
+/// operation.
+std::unique_ptr<OperationPass<>> createLLVMCPULowerToAccelUKernelsPass();
+
 //----------------------------------------------------------------------------//
 // Register LLVMCPU Passes
 //----------------------------------------------------------------------------//
