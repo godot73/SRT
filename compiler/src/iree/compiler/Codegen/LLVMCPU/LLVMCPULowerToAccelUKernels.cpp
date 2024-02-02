@@ -26,7 +26,7 @@ namespace {
 class LLVMCPULowerToAccelUKernelsPass
     : public LLVMCPULowerToAccelUKernelsBase<LLVMCPULowerToAccelUKernelsPass> {
 public:
-  LLVMCPULowerToAccelUKernelsPass() = default;
+  LLVMCPULowerToAccelUKernelsPass() { fprintf(stderr, "xxxxxxxxxxx ctor\n"); }
 
   void getDependentDialects(DialectRegistry &registry) const override {
     registry.insert<IREE::Codegen::IREECodegenDialect>();
@@ -111,6 +111,7 @@ struct LowerToAccelUKernelPattern : OpRewritePattern<OpType> {
 };
 
 void LLVMCPULowerToAccelUKernelsPass::runOnOperation() {
+  fprintf(stderr, "xxxxxxxxxxx runOnOperation\n");
   MLIRContext *context = &getContext();
   RewritePatternSet patterns(context);
   // Enabling a lowering of an op to a microkernel is a trade-off between the
