@@ -78,6 +78,14 @@ def LLVMCPULowerExecutableTarget :
       "mlir::iree_compiler::createLLVMCPULowerExecutableTargetPass()";
 }
 
+def LLVMCPULowerToAccelUKernels :
+    Pass<"iree-llvmcpu-lower-to-accel-ukernels", ""> {
+  let summary =
+      "Separate out parts of the IR that lower to an accel-micro-kernel";
+  let constructor =
+      "mlir::iree_compiler::createLLVMCPULowerToAccelUKernelsPass()";
+}
+
 def LLVMCPUMmt4dVectorLowering
     : InterfacePass<"iree-llvmcpu-mmt4d-vector-lowering", "mlir::FunctionOpInterface"> {
   let summary = "Apply vector lowering logic to vector ops";

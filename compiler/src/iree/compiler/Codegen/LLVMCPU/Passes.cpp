@@ -61,6 +61,11 @@ static llvm::cl::opt<bool> clEnablePadConsumerFusion(
     llvm::cl::desc("Flag to enable the fusion for pad + consumer"),
     llvm::cl::init(false));
 
+static llvm::cl::opt<bool> clEnableAccelMicrokernels(
+    "iree-llvmcpu-enable-accel-ukernels",
+    llvm::cl::desc("Flag to enable lowering to accelUkernels"),
+    llvm::cl::init(false));
+
 static llvm::cl::opt<bool> clEnableReassociateFpReductions(
     "iree-llvmcpu-reassociate-fp-reductions",
     llvm::cl::desc("Enables reassociation for FP reductions"),
@@ -545,6 +550,21 @@ void addMmt4dTilingExpertPassPipeline(OpPassManager &passManager,
   options.lowerVectorTransposeToAVX2 = lowerToAVX2;
   options.splitVectorTransfersTo = "linalg-copy";
   buildLLVMCPUVectorLoweringPipeline(nestedModulePM, options);
+}
+
+void addAccelMatmulExpertPassPipeline(OpPassManager &passManager,
+                                      TilingConfig &tilingConfig) {
+  addTileAndDistributePasses(passManager);
+
+  OpPassManager &nestedModulePM = passManager.nest<ModuleOp>();
+
+  
+  nestedModulePM.addPass(createLLVMCPULowerToAccelUKernelsPass());
+
+  nestedModulePM.addNestedPass<func::FuncOp>(createCanonicalizerPass());
+  nestedModulePM.addNestedPass<func::FuncOp>(createCSEPass());
+
+  addCPUBufferizePasses(nestedModulePM);
 }
 
 void addCPUDataTilingPipeline(OpPassManager &passManager,

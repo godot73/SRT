@@ -59,8 +59,9 @@ public:
       return;
     }
 
+    // TODO(sungsoon): Check the backend and branch accordingly.
     // Only llvm-cpu backends handle encodings for now, others just go with nop.
-    if (executableTarget.getBackend() != "llvm-cpu") {
+    if (true || executableTarget.getBackend() != "llvm-cpu") {
       return runNopPipeline(moduleOp);
     }
 

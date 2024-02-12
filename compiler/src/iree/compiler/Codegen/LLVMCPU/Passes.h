@@ -48,6 +48,15 @@ createLLVMCPULowerExecutableTargetPass();
 /// Can handel more operations if required in future.
 std::unique_ptr<Pass> createExpandF16OpToF32Pass();
 
+/// Pass to lower a sequence of operations to a iree_codegen.ukernel.*
+/// operation.
+std::unique_ptr<OperationPass<>>
+createLLVMCPULowerToUKernelsPass(bool skipIntermediateRoundings = true);
+
+/// Pass to lower a sequence of operations to a iree_codegen.ukernel.*
+/// operation.
+std::unique_ptr<OperationPass<>> createLLVMCPULowerToAccelUKernelsPass();
+
 std::unique_ptr<InterfacePass<mlir::FunctionOpInterface>>
 createLLVMCPUMmt4dVectorLoweringPass();
 
@@ -160,6 +169,9 @@ void addMmt4dTilingExpertPassPipeline(OpPassManager &passManager,
                                       TilingConfig &tilingConfig,
                                       bool enableMicrokernels,
                                       bool lowerToAVX2);
+
+void addAccelMatmulExpertPassPipeline(OpPassManager &passManager,
+                                      TilingConfig &tilingConfig);
 
 void addMultiTilingExpertPassPipeline(
     OpPassManager &passManager, TilingConfig &tilingConfig, bool enablePeeling,
