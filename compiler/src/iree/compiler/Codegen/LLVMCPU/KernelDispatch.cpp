@@ -1351,7 +1351,6 @@ static LogicalResult setRootConfig(mlir::FunctionOpInterface entryPointFn,
                                    linalg::MatmulOp matmulOp) {
   assert(!getLoweringConfig(matmulOp) && "expected lowering_config is not set");
   SmallVector<int64_t> tileSizes;
-  tileSizes.push_back(1);
   return setOpConfigAndEntryPointFnTranslation(
       entryPointFn, matmulOp, tileSizes,
       DispatchLoweringPassPipeline::AccelMatmulExpert);
