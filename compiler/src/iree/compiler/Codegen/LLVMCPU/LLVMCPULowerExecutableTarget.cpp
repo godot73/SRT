@@ -191,6 +191,7 @@ void LLVMCPULowerExecutableTargetPass::runOnOperation() {
     addTransformDialectPasses(
         pipeline, codegenSpec ? codegenSpec.getLeafReference() : StringRef(""));
     break;
+  }
   case IREE::Codegen::DispatchLoweringPassPipeline::AccelMatmulExpert: {
     TilingConfig tilingConfig = getTilingConfigForPipeline(moduleOp);
     addAccelMatmulExpertPassPipeline(pipeline, tilingConfig);
